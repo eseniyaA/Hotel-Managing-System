@@ -1,0 +1,15 @@
+<div *ngIf="!showStaffPage">
+  <h2>Enter your name:</h2>
+
+  <div [formGroup]="form">
+    <input pInputText formControlName="firstName" placeholder="First Name" class="m-2" />
+    <input pInputText formControlName="lastName" placeholder="Last Name" class="m-2" />
+    <button pButton pRipple (click)="submit()" class="p-button-raised p-button-success p-button-text m-2">
+      Submit
+    </button>
+  </div>
+</div>
+
+<div *ngIf="showStaffPage">
+  <app-staff-manage [person]="employee"></app-staff-manage>
+</div>

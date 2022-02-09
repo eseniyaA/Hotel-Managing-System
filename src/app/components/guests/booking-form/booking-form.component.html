@@ -1,0 +1,76 @@
+<div class="p-flex">
+  <div [formGroup]="form">
+    <h3>Choose dates:</h3>
+    <div class="m-2">
+      <p-calendar formControlName="arrivalDate" [minDate]="minimumDate" placeholder="arrival"></p-calendar>
+    </div>
+    <div class="m-2">
+      <span class="p-float-label">
+        <p-calendar formControlName="departureDate" [minDate]="minimumDate" placeholder="departure"></p-calendar>
+      </span>
+    </div>
+
+    <div formArrayName="rooms" class="mt-5">
+      <div *ngFor="let room of rooms" class="mt-2 mb-2">
+        <p-dropdown [options]="bookingRoomsOptions" optionLabel="type" placeholder="Select type" [formControl]="room">
+          <ng-template let-room pTemplate="item">
+            <div class="room-item">
+              <div>{{ room.type }}</div>
+              <div>{{ room.price }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+
+        <button pButton pRipple class="p-button-rounded p-button-danger p-button-text ml-1" (click)="deleteRoom(room)">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <button pButton pRipple (click)="addRoom()" class="p-button-raised p-button-text m-2">Add room</button>
+
+    <div class="mt-1">
+      <b>Total: {{ getBill() }}</b>
+    </div>
+
+    <div formArrayName="guests">
+      <div *ngFor="let guest of guests" [formGroup]="guest" class="mt-2 mb-2">
+        <input pInputText formControlName="firstName" placeholder="First Name" />
+        <input pInputText formControlName="lastName" placeholder="Last Name" class="ml-1" />
+        <button
+          pButton
+          pRipple
+          class="p-button-rounded p-button-danger p-button-text ml-1"
+          (click)="deleteGuest(guest)"
+        >
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <button pButton pRipple (click)="addGuest()" class="p-button-raised p-button-text m-2">Add guest</button>
+
+    <button pButton pRipple (click)="submit()" class="p-button-raised p-button-success p-button-text m-2">
+      Submit
+    </button>
+  </div>
+
+  <div *ngIf="roomTypes" class="types-table mt-2">
+    <p-table [value]="roomTypes">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Type</th>
+          <th>Guests Amount</th>
+          <th>Price</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-roomType>
+        <tr>
+          <td>{{ roomType.type }}</td>
+          <td>{{ roomType.guestsAmount }}</td>
+          <td>{{ roomType.price }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

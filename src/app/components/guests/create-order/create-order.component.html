@@ -1,0 +1,98 @@
+<button
+  pButton
+  pRipple
+  class="p-button-raised p-button-text m-2 mt-4"
+  (click)="showBreakfastForm = true; showTourForm = false"
+>
+  Order breakfast
+</button>
+<button
+  pButton
+  pRipple
+  class="p-button-raised p-button-text m-2"
+  (click)="showTourForm = true; showBreakfastForm = false"
+>
+  Book a tour
+</button>
+<button
+  pButton
+  pRipple
+  class="p-button-raised p-button-text m-2"
+  *ngIf="showBreakfastForm || showTourForm"
+  (click)="showTourForm = false; showBreakfastForm = false"
+>
+  Back
+</button>
+
+<div [formGroup]="orderBreakfastForm" *ngIf="showBreakfastForm">
+  <p-dropdown [options]="breakfastOptions" optionLabel="menu" placeholder="Select breakfast" formControlName="menu">
+    <ng-template let-breakfast pTemplate="item">
+      <div>
+        <div>{{ breakfast.menu }}</div>
+        <div>{{ breakfast.price }}</div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+
+  <button pButton pRipple (click)="submitBreakfast()" class="p-button-raised p-button-text m-2">Submit</button>
+</div>
+
+<div [formGroup]="orderTourForm" *ngIf="showTourForm">
+  <p-dropdown [options]="tourOptions" optionLabel="title" placeholder="Select tour" formControlName="tour">
+    <ng-template let-tour pTemplate="item">
+      <div>
+        <div>{{ tour.title }}</div>
+        <div>{{ tour.price }}</div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+  <p-dropdown [options]="commonGuests" optionLabel="firstName" placeholder="Select guest" formControlName="guests">
+    {{ commonGuests | json }}
+    <ng-template let-guest pTemplate="item">
+      <div>
+        <div>{{ guest.firstName }}</div>
+        <div>{{ guest.lastName }}</div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+
+  <button pButton pRipple (click)="submitTour()" class="p-button-raised p-button-text m-2">Submit</button>
+</div>
+
+<div class="flex">
+  <div *ngIf="breakfasts" class="table ml-2">
+    <h3>Ordered breakfasts</h3>
+    <p-table [value]="breakfasts">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Menu</th>
+          <th>Price</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-breakfast>
+        <tr>
+          <td>{{ breakfast.menu }}</td>
+          <td>{{ breakfast.price }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div *ngIf="orderedTours" class="table ml-2">
+    <h3>Ordered tours</h3>
+    <p-table [value]="orderedTours">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Title</th>
+          <th>Price</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-tour>
+        <tr>
+          <td>{{ tour.title }}</td>
+          <td>{{ tour.price }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<div *ngIf="guest">
+  <button
+    pButton
+    pRipple
+    (click)="showNewBookingForm = true; showBookingForm = false"
+    class="p-button-raised p-button-text m-2"
+  >
+    Create new booking
+  </button>
+  <button
+    *ngIf="curBooking"
+    pButton
+    pRipple
+    (click)="showBookingForm = true; showNewBookingForm = false"
+    class="p-button-raised p-button-text m-2"
+  >
+    Change current booking
+  </button>
+  <button
+    *ngIf="guest!.bookings.length > 0"
+    pButton
+    pRipple
+    (click)="showPreviousBookings = true"
+    class="p-button-raised p-button-text m-2"
+  >
+    Show previous bookings
+  </button>
+
+  <button
+    pButton
+    pRipple
+    *ngIf="showNewBookingForm || showBookingForm || showPreviousBookings"
+    (click)="showPreviousBookings = false; showBookingForm = false; showNewBookingForm = false"
+    class="p-button-raised p-button-text m-2"
+  >
+    Back
+  </button>
+</div>
+
+<div *ngIf="showBookingForm && guest && curBooking">
+  <app-booking-form [guest]="guest" [booking]="curBooking"></app-booking-form>
+  <app-create-order [guest]="guest" [curBooking]="curBooking"></app-create-order>
+</div>
+
+<div *ngIf="showNewBookingForm && guest">
+  <app-booking-form [guest]="guest"></app-booking-form>
+</div>
+
+<div *ngIf="guest && showPreviousBookings">
+  <p-table [value]="guest.bookings">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Arrival Date</th>
+        <th>Departure Date</th>
+        <th>Bill</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-booking>
+      <tr>
+        <td>{{ booking.arrivalDate | date: 'MMM d, y' }}</td>
+        <td>{{ booking.departureDate | date: 'MMM d, y' }}</td>
+        <td>{{ booking.bill }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

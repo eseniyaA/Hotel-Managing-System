@@ -1,0 +1,9 @@
+<div class="flex justify-content-center">
+  <button pButton pRipple routerLink="/guest" class="p-button-raised p-button-text m-2">Guests</button>
+  <button pButton pRipple routerLink="/staff" class="p-button-raised p-button-text m-2">Staff</button>
+  <button pButton pRipple routerLink="/admin" class="p-button-raised p-button-text m-2">Administration</button>
+</div>
+
+<div *ngIf="description$ | async as description">
+  <h3>{{ description[0].description }}</h3>
+</div>

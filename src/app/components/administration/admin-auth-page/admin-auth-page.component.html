@@ -1,0 +1,14 @@
+<div *ngIf="!showManagePage">
+  <div [formGroup]="form">
+    <div class="m-2"><b>Enter password:</b></div>
+    <input pInputText type="password" formControlName="password" placeholder="Password" class="m-2" />
+    <label *ngIf="invalidPassword" class="m-2">Password is incorrect</label>
+    <button pButton pRipple (click)="submit()" class="p-button-raised p-button-success p-button-text m-2">
+      Submit
+    </button>
+  </div>
+</div>
+
+<div *ngIf="showManagePage">
+  <app-admin-manage></app-admin-manage>
+</div>

@@ -1,0 +1,41 @@
+<p-table *ngIf="breakfasts$ | async as breakfasts" [value]="breakfasts" [formGroup]="form">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="menu">Menu<p-sortIcon field="menu"></p-sortIcon></th>
+      <th pSortableColumn="price">Price<p-sortIcon field="price"></p-sortIcon></th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-breakfast>
+    <tr *ngIf="!editable">
+      <td>
+        {{ breakfast.menu }}
+      </td>
+      <td>
+        {{ breakfast.price }}
+      </td>
+    </tr>
+    <tr *ngIf="editable">
+      <td pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText placeholder="Enter menu" [(ngModel)]="breakfast.menu" formControlName="menu" />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ breakfast.menu }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td pEditableColumn>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText placeholder="Enter menu" [(ngModel)]="breakfast.price" formControlName="price" />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ breakfast.price }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

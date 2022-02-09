@@ -1,0 +1,36 @@
+<div *ngIf="person">
+  <h1 class="text-center">Welcome back, {{ person.firstName }}!</h1>
+
+  <div *ngIf="person.positionId === 10">
+    <app-bookings-table [person]="person" [bookings]="bookings" [editable]="false"></app-bookings-table>
+  </div>
+
+  <div *ngIf="person.positionId === 4">
+    <app-bookings-table [person]="person" [bookings]="bookings" [editable]="true"></app-bookings-table>
+  </div>
+
+  <div *ngIf="person.positionId == 1 || person.positionId == 2 || person.positionId == 3 || person.positionId == 5">
+    Statistics on guests, rooms, breakfasts, bookings
+    <!--    <div *ngIf="popularRoom$ | async as popularRoom">-->
+    <!--      <h2>Most popular room</h2>-->
+    <!--      {{ popularRoom | json }}-->
+    <!--      <div>-->
+    <!--        <div>Type</div>-->
+    <!--        <div>{{ popularRoom.type }}}</div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <h2>Most popular breakfast</h2>
+
+    <h2>Most popular tour</h2>
+
+    <h2>Least popular room</h2>
+
+    <h2>Least popular breakfast</h2>
+
+    <h2>Least popular tour</h2>
+  </div>
+
+  <div *ngIf="person.positionId == 8 || person.positionId == 9">
+    <app-breakfasts-table [editable]="false"></app-breakfasts-table>
+  </div>
+</div>

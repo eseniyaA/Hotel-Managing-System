@@ -1,0 +1,330 @@
+<h2>Manage Staff</h2>
+<div *ngIf="!showCreateForm" class="m-2">
+  <button pButton pRipple (click)="showCreate()" class="p-button-raised p-button-text m-2">Add new staff member</button>
+</div>
+<div *ngIf="showCreateForm" [formGroup]="createForm" class="m-2">
+  <input pInputText placeholder="First Name" formControlName="firstName" class="m-2" />
+  <input pInputText placeholder="Last Name" formControlName="lastName" class="m-2" />
+  <p-dropdown
+    [options]="positions"
+    optionLabel="name"
+    placeholder="Select position"
+    formControlName="position"
+    class="m-2"
+  >
+    <ng-template let-position pTemplate="item">
+      <div class="position-item">
+        <div>{{ position.name }}</div>
+        <div>{{ position.basicSalary }}</div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+
+  <button pButton pRipple (click)="addNewStaff()" class="p-button-raised p-button-success p-button-text m-2">
+    Submit
+  </button>
+  <button pButton pRipple (click)="showCreateForm = false" class="p-button-raised p-button-text m-2">Cancel</button>
+</div>
+
+<ng-container [formGroup]="form">
+  <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+  <p-table [value]="staff" [scrollable]="true" scrollHeight="400px">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="firstName">First name<p-sortIcon field="firstName"></p-sortIcon></th>
+        <th pSortableColumn="lastName">Last Name<p-sortIcon field="lastName"></p-sortIcon></th>
+        <th pSortableColumn="rating">Rating<p-sortIcon field="rating"></p-sortIcon></th>
+        <th pSortableColumn="position">Position<p-sortIcon field="position"></p-sortIcon></th>
+        <th pSortableColumn="salary">Salary<p-sortIcon field="salary"></p-sortIcon></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-person>
+      <tr>
+        <td>
+          {{ person.firstName }}
+        </td>
+        <td>
+          {{ person.lastName }}
+        </td>
+        <td>
+          <div
+            [ngClass]="{
+              bad: person.rating <= 2,
+              well: person.rating > 2 && person.rating < 4,
+              great: person.rating >= 4
+            }"
+          >
+            {{ person.rating }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown
+                [options]="positions"
+                optionLabel="name"
+                placeholder="Select position"
+                (keydown.enter)="updatePosition(person)"
+                [(ngModel)]="person.position"
+                formControlName="position"
+              ></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ person.position }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input
+                pInputText
+                type="text"
+                (keydown.enter)="updateSalary(person)"
+                [(ngModel)]="person.salary"
+                formControlName="salary"
+                required
+              />
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ person.salary }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-text"
+            (click)="deleteStaff(person)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>
+
+<div *ngIf="description$ | async as description" [formGroup]="descriptionForm" class="mt-4">
+  <h2>Current description of the hotel:</h2>
+  <textarea
+    [rows]="5"
+    [cols]="50"
+    pInputTextarea
+    placeholder="Enter description of your hotel"
+    [(ngModel)]="description[0].description"
+    formControlName="description"
+    [autoResize]="true"
+  ></textarea>
+
+  <button pButton pRipple (click)="submitDescription()" class="p-button-raised p-button-success p-button-text m-2">
+    Sumbit
+  </button>
+</div>
+
+<div class="mt-4">
+  <h2>Manage Breakfasts</h2>
+  <div *ngIf="!showCreateBreakfastForm" class="m-2">
+    <button pButton pRipple (click)="showCreateBreakfastForm = true" class="p-button-raised p-button-text m-2">
+      Add new breakfast
+    </button>
+  </div>
+
+  <div *ngIf="showCreateBreakfastForm" [formGroup]="createBreakfastForm" class="m-2">
+    <input pInputText placeholder="Menu" formControlName="menu" class="m-2" />
+    <input pInputText placeholder="Price" formControlName="price" class="m-2" />
+
+    <button pButton pRipple (click)="addNewBreakfast()" class="p-button-raised p-button-success p-button-text m-2">
+      Submit
+    </button>
+    <button pButton pRipple (click)="showCreateBreakfastForm = false" class="p-button-raised p-button-text m-2">
+      Cancel
+    </button>
+  </div>
+
+  <div *ngIf="breakfasts">
+    <p-table [value]="breakfasts" [formGroup]="breakfastForm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="menu">Menu<p-sortIcon field="menu"></p-sortIcon></th>
+          <th pSortableColumn="price">Price<p-sortIcon field="price"></p-sortIcon></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-breakfast>
+        <tr>
+          <td pEditableColumn>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input
+                  pInputText
+                  type="text"
+                  (keydown.enter)="updateMenu(breakfast)"
+                  [(ngModel)]="breakfast.menu"
+                  formControlName="menu"
+                  required
+                />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ breakfast.menu }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td pEditableColumn>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input
+                  pInputText
+                  type="text"
+                  (keydown.enter)="updatePrice(breakfast)"
+                  [(ngModel)]="breakfast.price"
+                  formControlName="price"
+                  required
+                />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ breakfast.price }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-times"
+              class="p-button-rounded p-button-danger p-button-text"
+              (click)="deleteBreakfast(breakfast)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<div class="mt-4">
+  <h2>Manage Tours</h2>
+  <div *ngIf="!showCreateTourForm" class="m-2">
+    <button pButton pRipple (click)="showCreateTourForm = true" class="p-button-raised p-button-text m-2">
+      Add new tour
+    </button>
+  </div>
+
+  <div *ngIf="showCreateTourForm" [formGroup]="createTourForm" class="m-2">
+    <input pInputText placeholder="Title" formControlName="title" class="m-2" />
+    <input pInputText placeholder="Possible amount of guests" formControlName="commonAmount" class="m-2" />
+    <textarea pInputTextarea placeholder="Description" formControlName="description" class="m-2"></textarea>
+    <input pInputText placeholder="Price" formControlName="price" class="m-2" />
+
+    <button pButton pRipple (click)="addNewTour()" class="p-button-raised p-button-success p-button-text m-2">
+      Submit
+    </button>
+    <button pButton pRipple (click)="showCreateTourForm = false" class="p-button-raised p-button-text m-2">
+      Cancel
+    </button>
+  </div>
+
+  <div *ngIf="tours">
+    <p-table [value]="tours" [formGroup]="tourForm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="title">Title<p-sortIcon field="title"></p-sortIcon></th>
+          <th pSortableColumn="commonAmount">
+            Possible amount of guests<p-sortIcon field="commonAmount"></p-sortIcon>
+          </th>
+          <th pSortableColumn="amountOfGuests">
+            Actual amount of guests<p-sortIcon field="amountOfGuests"></p-sortIcon>
+          </th>
+          <th>Description</th>
+          <th pSortableColumn="price">Price<p-sortIcon field="price"></p-sortIcon></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-tour>
+        <tr>
+          <td pEditableColumn>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input
+                  pInputText
+                  type="text"
+                  (keydown.enter)="updateTour(tour, tour)"
+                  [(ngModel)]="tour.title"
+                  formControlName="title"
+                  required
+                />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ tour.title }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td pEditableColumn>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input
+                  pInputText
+                  type="text"
+                  (keydown.enter)="updateTour(tour, tour)"
+                  [(ngModel)]="tour.commonAmount"
+                  formControlName="commonAmount"
+                  required
+                />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ tour.commonAmount }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            {{ tour.amountOfGuests }}
+          </td>
+          <td pEditableColumn>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <textarea
+                  pInputTextarea
+                  (keydown.enter)="updateTour(tour, tour)"
+                  [(ngModel)]="tour.description"
+                  formControlName="description"
+                  required
+                ></textarea>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ tour.description }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td pEditableColumn>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input
+                  pInputText
+                  type="text"
+                  (keydown.enter)="updateTour(tour, tour)"
+                  [(ngModel)]="tour.price"
+                  formControlName="price"
+                  required
+                />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ tour.price }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-times"
+              class="p-button-rounded p-button-danger p-button-text"
+              (click)="deleteTour(tour)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
