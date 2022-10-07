@@ -11,6 +11,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
+import { MessagesModule } from 'primeng/messages';
 
 @NgModule({
   declarations: [BookingFormComponent],
@@ -25,6 +26,7 @@ import { TableModule } from 'primeng/table';
     CalendarModule,
     DropdownModule,
     TableModule,
+    MessagesModule,
   ],
   providers: [],
   exports: [BookingFormComponent],

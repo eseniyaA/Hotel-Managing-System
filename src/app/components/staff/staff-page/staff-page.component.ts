@@ -17,6 +17,7 @@ export class StaffPageComponent implements OnInit {
   employee: any = {};
 
   showStaffPage = false;
+  invalidPassword = false;
 
   form = this.fb.group({
     firstName: ['', Validators.required],
@@ -49,12 +50,13 @@ export class StaffPageComponent implements OnInit {
   }
 
   submit() {
+    let invalidPassword;
     if (this.form.valid) {
       this.employee = this.staff.find(
         (staff) => staff.firstName == this.form.value.firstName && staff.lastName == this.form.value.lastName
       );
       if (!this.employee) {
-        console.log('no staff with this name');
+        this.invalidPassword = true;
       } else {
         this.showStaffPage = true;
         this.router.navigate(['staff', this.employee.id]);

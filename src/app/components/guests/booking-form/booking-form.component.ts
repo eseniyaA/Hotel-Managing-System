@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { HttpClient } from '@angular/common/http';
 import { Booking, Booking_Room, Guest, Guest_Booking, Room, RoomType } from '../../../shared/interfaces';
 import { forkJoin, switchMap } from 'rxjs';
+import { Message, MessageService } from 'primeng/api';
 
 interface BookingRoomOption {
   roomId?: number;
@@ -25,6 +26,7 @@ interface BookingGuestOption {
   templateUrl: './booking-form.component.html',
   styleUrls: ['./booking-form.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [MessageService],
 })
 export class BookingFormComponent implements OnInit {
   @Input() guest: Guest | undefined;
@@ -37,6 +39,7 @@ export class BookingFormComponent implements OnInit {
   bookingGuests: Guest_Booking[] = [];
   freeRooms: Room[] = [];
   allGuests: Guest[] = [];
+  msgs: Message[] = [];
 
   form: FormGroup;
   minimumDate = new Date();
@@ -49,7 +52,12 @@ export class BookingFormComponent implements OnInit {
     return (this.form.get('guests') as FormArray).controls as FormGroup[];
   }
 
-  constructor(private fb: FormBuilder, private httpClient: HttpClient, private cRef: ChangeDetectorRef) {
+  constructor(
+    private fb: FormBuilder,
+    private httpClient: HttpClient,
+    private cRef: ChangeDetectorRef,
+    private messageService: MessageService
+  ) {
     this.form = this.fb.group({
       arrivalDate: ['', Validators.required],
       departureDate: ['', Validators.required],
@@ -200,7 +208,8 @@ export class BookingFormComponent implements OnInit {
 
   submit() {
     if (!this.areRoomsEnough()) {
-      console.error('Not enough rooms chosen for this amount of guests!');
+      this.messageService.add({ severity: 'error', summary: 'Not enough rooms chosen for this amount of guests!' });
+      this.msgs = [{ severity: 'error', summary: 'Not enough rooms chosen for this amount of guests' }];
       return;
     }
 
@@ -271,6 +280,9 @@ export class BookingFormComponent implements OnInit {
     const { departureDate, arrivalDate } = this.form.value;
 
     if (!departureDate || !arrivalDate) return 0;
+    else if (departureDate < arrivalDate)
+      this.msgs = [{ severity: 'error', summary: 'Departure date must be after the Arrival date' }];
+    else this.msgs = [];
 
     const d1 = new Date(departureDate).setHours(0, 0, 0, 0);
     const d2 = new Date(arrivalDate).setHours(0, 0, 0, 0);
