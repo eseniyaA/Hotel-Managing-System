@@ -1,0 +1,22 @@
+image: node:16.10
+
+stages:
+  - install
+  - test
+
+install_packages:
+  stage: install
+  script:
+    - npm ci
+  cache:
+    key: ${CI_COMMIT_REF_NAME}
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - node_modules/
+
+test:
+  stage: test
+  script:
+    - echo "Hello"

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
 import { RippleModule } from 'primeng/ripple';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
